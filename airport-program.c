@@ -1,15 +1,16 @@
 /* 
     airport-program.c
     Project 1
-    Firstname Lastname
+    Zaquariah Holland
 
-    This is the driver for the airport program. It is displays the main menu presenting a selection of options 
+    This is the driver for the airport program. It displays the main menu presenting a selection of options 
     for the user to get information about the airports in the system. The main function will then call functions
     in 'airport.c' to calculate and retrieve information, which will then be printed here. 
 */
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
+#define MAX 12
 
 /* 
     main 
@@ -37,6 +38,7 @@ int main(int argc, char *argv[])
                     3. If either the airport's latitude or longitude is -99999, that means the airport was not found. Print an appropriate error. 
                     4. If airport found, print the airport information.
                 */ 
+				findAirport(airports);
                 break;
             case 2:
                 /*
