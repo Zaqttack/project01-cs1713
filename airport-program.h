@@ -10,16 +10,6 @@
 #define AIRPORT-PROGRAM_H
 #include "airport.h"
 
-typedef struct Airport_struct
-{
-	char code[4];
-	char name[50];
-	double log;
-	double lat;
-} Airport;
-
-const int EARTH_RADIUS = 3961; 			//value in Miles
-
 /* 
     printMenu
     ---------------------------
@@ -27,8 +17,5 @@ const int EARTH_RADIUS = 3961; 			//value in Miles
     Returns: Nothing
 */
 void printMenu();
-int fillAirports(Airport airports);
-Airport findAirport(Airport airports[], int length, char code[]);
-double calculateDistance(Airport airport1, Airport airport2);
 
 #endif

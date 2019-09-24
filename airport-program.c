@@ -10,7 +10,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
-#define MAX 12
 
 /* 
     main 
