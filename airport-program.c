@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
+#include "airport-program.h"
 
 /* 
     main 
@@ -19,7 +20,19 @@
 */
 int main(int argc, char *argv[])
 {
-    Airport airports[MAX]; // MAX to be defined in 'airport.h'
+    Airport airports[MAX];	// MAX defined in 'airport.h'
+	Airport output[MAX];	// MAX defined in 'airport.h'
+	Airport search;			// an empty struct varible
+	Airport range[MAX];
+	Airport temp1;
+	Airport temp2;
+	char user1[4];
+	char user2[4];
+	int i;
+	int choice;
+	int userRange;
+	int resultsLength;		// used for a pointer
+	
     fillAirports(airports);
 
     while(1)
@@ -37,12 +50,22 @@ int main(int argc, char *argv[])
                     3. If either the airport's latitude or longitude is -99999, that means the airport was not found. Print an appropriate error. 
                     4. If airport found, print the airport information.
                 */ 
-				findAirport(airports);
+				printf("Enter a 3 letter IATA code : ");
+				fgets(user1, 4, stdin);
+				temp1 = findAirport(airports, MAX, user1);
+				if (temp1.lat == -99999) {
+					printf("IATA Code does not exits!\n");
+					break;
+				}
+				else {
+					printAirport(temp1);
+				}
                 break;
             case 2:
                 /*
                     Call the printAirports() function.
                 */
+				printAirports(airports, MAX);
                 break;
             case 3:
                 /*
@@ -52,16 +75,52 @@ int main(int argc, char *argv[])
                     4. If both airports found successfully, call the calculateDistance() function.
                     5. Print out the distance between the two airports.
                 */
+				printf("Enter a 3 letter IATA code : ");
+				fgets(user1, 4, stdin);
+				temp1 = findAirport(airports, MAX, user1);
+				printf("Enter a 3 letter IATA code : ");
+				fgets(user2, 4, stdin);
+				temp2 = findAirport(airports, MAX, user2);
+				if (temp1.lat == -99999 || temp2.lat == -99999) {
+					printf("IATA Code does not exits!\n");
+					break;
+				}
+				else {
+					printf("Distance between %s and %s is %lf\n", temp1.code, temp2.code, calculateDistance(temp1, temp2));
+				}
                 break;
             case 4:
                 /*  
                     1. Get a 3-letter airport code from the user. 
                     2. Call findAirport() on this origin airport code.
-                    3. If the airport's latitude or longitude is -99999, that means the airport was not found. Print an appropriate error.
-                    4. If airport found successfully, get a range in miles (integer) from the user. 
-                    5. Call findInRange() to get an array of Airports within the specified range of the origin airport.
-                    6. Print the return array of airports in range. If the result length returned is zero, print a message that no airports were found.
+                    3. If the airport's latitude or longitude is -99999, that means the
+					   airport was not found. Print an appropriate error.
+                    4. If airport found successfully, get a range in miles (integer) 
+					   from the user. 
+                    5. Call findInRange() to get an array of Airports within the specified 
+					   range of the origin airport.
+                    6. Print the return array of airports in range. If the result length 
+					   returned is zero, print a message that no airports were found.
                 */
+				printf("Enter a 3 letter IATA code : ");
+				fgets(user1, 4, stdin);
+				temp1 = findAirport(airports, MAX, user1);
+				if (temp1.lat == -99999) {
+					printf("IATA Code does not exits!\n");
+					break;
+				}
+				printf("Your range (in miles) : \n");
+				scanf("%d", &userRange);
+				findInRange(airports, MAX, temp1, userRange, range, &resultsLength);
+				if (resultsLength < 1) {
+					printf("No airports found within %d miles\n", userRange);
+					break;
+				}
+				else {
+					for (i = 0; i < resultsLength; i++) {
+						printAirport(range[i]);
+					}
+				}
                 break;
             case 0:
             default:

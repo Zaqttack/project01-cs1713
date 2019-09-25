@@ -1,9 +1,9 @@
-#inlcude <stdio.h>
+#include <stdio.h>
+#include <string.h>
 #include <math.h>
 #include "airport-program.h"
 
-fillAirports(Airports airports)
-{
+void fillAirports(Airport* airports) {
 	strcpy(airports[0].code, "SAT");
 	strcpy(airports[0].name, "San Antonio Intl");
 	airports[0].lat = 29.533958;
@@ -25,12 +25,12 @@ fillAirports(Airports airports)
 	airports[3].lon = -43.250555;
 	
 	strcpy(airports[4].code, "HKG");
-	strcpy(airports[4].name, "Hong Kong Intl");
+	strcpy(airports[4].name, "Hong Kong Intl\t");
 	airports[4].lat = 22.308889;
 	airports[4].lon = 113.914722;
 	
 	strcpy(airports[5].code, "JFK");
-	strcpy(airports[5].name, "New York-JFK");
+	strcpy(airports[5].name, "New York-JFK\t");
 	airports[5].lat = 40.639926;
 	airports[5].lon = -73.778694;
 	
@@ -45,7 +45,7 @@ fillAirports(Airports airports)
 	airports[7].lon = -118.408048;
 	
 	strcpy(airports[8].code, "LHR");
-	strcpy(airports[8].name, "London Heathrow");
+	strcpy(airports[8].name, "London Heathrow\t");
 	airports[8].lat = 51.477500;
 	airports[8].lon = -0.461388;
 	
@@ -55,63 +55,74 @@ fillAirports(Airports airports)
 	airports[9].lon = -99.072096;
 	
 	strcpy(airports[10].code, "SIN");
-	strcpy(airports[10].name, "Singapor Changi");
+	strcpy(airports[10].name, "Singapor Changi\t");
 	airports[10].lat = 1.359211;
 	airports[10].lon = 103.989333;
 	
 	strcpy(airports[11].code, "NRT");
-	strcpy(airports[11].name, "Tokyo Narita");
+	strcpy(airports[11].name, "Tokyo Narita\t");
 	airports[11].lat = 35.765556;
 	airports[11].lon = 140.385556;
 }
 
-void printAirports(Airport airpots[], int length)
-{
+void printAirports(Airport* airports, int length) {
 	int i;
 	
-	printf("CODE\tName\t\t\t\tLatitude\tLongitude\n");
+	printf("\nCODE\tName\t\t\t\tLatitude\tLongitude\n");
 	for ( i = 0; i < length; i++)
 	{
-		printAiport(airports[i]);
+		printAirport(airports[i]);
 	}
 }
 
-void printAiport(Airport airport)
-{
+void printAirport(Airport airport) {
 	printf("%s\t", airport.code);
 	printf("%s\t\t", airport.name);
 	printf("%lf\t", airport.lon);
 	printf("%lf\n", airport.lat);
 }
 
-Airport findAirport(Airport airports[], int length,char code[])
-{
-	int i = 0;
-	Airport temp;			//temp to return if no valud code
+Airport findAirport(Airport* airports, int length, char* code) {
+	int i;
+	Airport temp;			//temp to return if no valid IATA code
 	temp.lat = -99999;
-	temp.lot = -99999;
 	
-	for (i = 0; i < length; i++)
-	{
-		if (strcmp(airportsp[i].code, toupper(code)) == 0)
-		{
+	for (i = 0; i < length; i++) {
+		if (strcmp(airports[i].code, code) == 0) {
 			return airports[i];
 		}
 	}
 	return temp;
 }
 
-double calculateDistance(Airport airport1, Airport airport2)
-{
-	double dLon;
-	double dLat;
-	double a, c, d;
-	
-	dLon = airport2.lon - airport1.lon;
-	dLat = airport2.lat - airport1.lat;
-	a = pow( sin( dLat / 2 ) , 2 ) + cos( airport1.lat ) * cos( airport2.lat ) * pow( sin( dLon / 2 ), 2 );
-	c = 2 * atan2( sqrt(a), sqrt( 1 - a ));
-	d = EARTH_RADIUS * c;
-	
-	return c;
+double deg2rad(double deg) {
+  return (deg * M_PI / 180);
+}
+
+double calculateDistance(Airport airport1, Airport airport2) {
+  double lat1, lon1, lat2, lon2, a, c, d;
+  lat1 = deg2rad(airport1.lat);
+  lon1 = deg2rad(airport1.lon);
+  lat2 = deg2rad(airport2.lat);
+  lon2 = deg2rad(airport2.lon);
+  a = sin((lat2 - lat1)/2);
+  c = sin((lon2 - lon1)/2);
+  d = asin(sqrt(a * a + cos(lat1) * cos(lat2) * c * c));
+  return 2.0 * EARTH_RADIUS * d;
+}
+
+void findInRange(Airport* airports, int length, Airport origin, int range, Airport* output, int* resultsLength) {
+    int i;
+    double currentAirport;
+    int tempInt = 0;
+    *resultsLength = 0;
+    
+    for (i = 0; i < length; i++) {
+        currentAirport = calculateDistance(origin, airports[i]);
+        if (range > currentAirport) {
+            output[tempInt] = airports[i];
+            tempInt++;
+            *resultsLength += 1;
+        }
+    }
 }

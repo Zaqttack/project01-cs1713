@@ -3,16 +3,11 @@
 #define MAX 12
 #define EARTH_RADIUS 3961
 
-typedef struct Airport_struct
-{
+typedef struct Airport_struct {
 	char code[4];
 	char name[50];
 	double lon;
 	double lat;
 } Airport;
-
-int fillAirports(Airport);
-Airport findAirport(Airport, int, char);
-double calculateDistance(Airport , Airport);
 
 #endif

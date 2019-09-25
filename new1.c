@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
-#define MAX 3
+#define MAX 5
 #define EARTH_RADIUS 3961
 
 typedef struct Airport_struct {
@@ -26,9 +26,19 @@ void fillAiports(Airport airports[]) {
 	strcpy(airports[2].name, "Paris Charles De Gaulle");
 	airports[2].lat = 49.009722;
 	airports[2].lon = 2.547780;
+	
+	strcpy(airports[3].code, "GIG");
+	strcpy(airports[3].name, "Rio De Janeiro Galeão");
+	airports[3].lat = -22.809999;
+	airports[3].lon = -43.250555;
+	
+	strcpy(airports[4].code, "HKG");
+	strcpy(airports[4].name, "Hong Kong Intl");
+	airports[4].lat = 22.308889;
+	airports[4].lon = 113.914722;
 }
 
-void printAiport(Airport airport) {
+void printAirport(Airport airport) {
     printf("%s\t", airport.code);
     printf("%s\t\t", airport.name);
     printf("%lf\t", airport.lat);
@@ -40,7 +50,7 @@ void printAiports(Airport airports[], int length) {
     
 	printf("CODE\tName\t\t\t\tLatitude\tLongitude\n");
     for (i = 0; i < length; i++) {
-        printAiport(airports[i]);
+        printAirport(airports[i]);
 	}
 }
 
@@ -58,7 +68,7 @@ Airport findAirport(Airport airports[], int length, char code[])
 	}
 	return temp;
 }
-
+/*
 double calculateDistance(Airport airport1, Airport airport2)
 {
 	double dLon;
@@ -76,15 +86,57 @@ double calculateDistance(Airport airport1, Airport airport2)
 	
 	return d;
 }
+*/
+double deg2rad(double deg) {
+  return (deg * M_PI / 180);
+}
+
+double calculateDistance(Airport airport1, Airport airport2) {
+  double lat1, lon1, lat2, lon2, a, c, d;
+  lat1 = deg2rad(airport1.lat);
+  lon1 = deg2rad(airport1.lon);
+  lat2 = deg2rad(airport2.lat);
+  lon2 = deg2rad(airport2.lon);
+  a = sin((lat2 - lat1)/2);
+  c = sin((lon2 - lon1)/2);
+  d = asin(sqrt(a * a + cos(lat1) * cos(lat2) * c * c));
+  return 2.0 * EARTH_RADIUS * d;
+}
+
+void findInRange(Airport airports[], int length, Airport origin, int range, Airport* output, int *resultsLength) {
+    int i;
+    double currentAirport;
+    int tempInt = 0;
+    *resultsLength = 0;
+    
+    for (i = 0; i < length; i++) {
+        currentAirport = calculateDistance(origin, airports[i]);
+        if (range > currentAirport) {
+            output[tempInt] = airports[i];
+            tempInt++;
+            *resultsLength += 1;
+        }
+    }
+}
 
 int main() {
+    int i;
     char user[4];
     Airport a[MAX];
     Airport search;
+    Airport range[MAX];
+    int resultsLength;
     fillAiports(a);
     //printAiports(a, MAX);
     //fgets(user, 4, stdin);
     //search = findAirport(a, MAX, user);
-    //printAiport(search);
-    printf("Distance apart %lf\n", calculateDistance(a[0], a[2]));
+    //printAirport(search);
+    //printf("Distance apart %lf\n", calculateDistance(a[0], a[2]));
+    printf("Distance apart %lf\n", calculateDistance(a[1], a[2]));
+    printf("original airport: ");
+    printAirport(a[1]);
+    findInRange(a, MAX, a[1], calculateDistance(a[1], a[2]), range, &resultsLength);
+    for (i = 0; i < resultsLength; i++) {
+        printAirport(range[i]);
+    }
 }
