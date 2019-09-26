@@ -132,6 +132,7 @@ int main() {
     //search = findAirport(a, MAX, user);
     //printAirport(search);
     //printf("Distance apart %lf\n", calculateDistance(a[0], a[2]));
+	/*
     printf("Distance apart %lf\n", calculateDistance(a[1], a[2]));
     printf("original airport: ");
     printAirport(a[1]);
@@ -139,4 +140,8 @@ int main() {
     for (i = 0; i < resultsLength; i++) {
         printAirport(range[i]);
     }
+	*/
+	printf("Enter a 3 digit IATA code: ");
+	fgets(user, sizeof(user), stdin);
+	printf("%s\n", user);
 }

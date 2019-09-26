@@ -51,13 +51,14 @@ int main(int argc, char *argv[])
                     4. If airport found, print the airport information.
                 */ 
 				printf("Enter a 3 letter IATA code : ");
-				fgets(user1, 4, stdin);
+				scanf("%s", user1);
 				temp1 = findAirport(airports, MAX, user1);
 				if (temp1.lat == -99999) {
 					printf("IATA Code does not exits!\n");
 					break;
 				}
 				else {
+					printf("\nCODE\tName\t\t\t\tLatitude\tLongitude\n");
 					printAirport(temp1);
 				}
                 break;
@@ -75,18 +76,18 @@ int main(int argc, char *argv[])
                     4. If both airports found successfully, call the calculateDistance() function.
                     5. Print out the distance between the two airports.
                 */
-				printf("Enter a 3 letter IATA code : ");
-				fgets(user1, 4, stdin);
+				printf("Enter the 1st 3 letter IATA code : ");
+				scanf("%s", user1);
 				temp1 = findAirport(airports, MAX, user1);
-				printf("Enter a 3 letter IATA code : ");
-				fgets(user2, 4, stdin);
+				printf("Enter the 2nd 3 letter IATA code : ");
+				scanf("%s", user2);
 				temp2 = findAirport(airports, MAX, user2);
 				if (temp1.lat == -99999 || temp2.lat == -99999) {
 					printf("IATA Code does not exits!\n");
 					break;
 				}
 				else {
-					printf("Distance between %s and %s is %lf\n", temp1.code, temp2.code, calculateDistance(temp1, temp2));
+					printf("Distance between %s and %s is %lf miles.\n", temp1.code, temp2.code, calculateDistance(temp1, temp2));
 				}
                 break;
             case 4:
@@ -103,13 +104,13 @@ int main(int argc, char *argv[])
 					   returned is zero, print a message that no airports were found.
                 */
 				printf("Enter a 3 letter IATA code : ");
-				fgets(user1, 4, stdin);
+				scanf("%s", user1);
 				temp1 = findAirport(airports, MAX, user1);
 				if (temp1.lat == -99999) {
 					printf("IATA Code does not exits!\n");
 					break;
 				}
-				printf("Your range (in miles) : \n");
+				printf("Your range (in miles) : ");
 				scanf("%d", &userRange);
 				findInRange(airports, MAX, temp1, userRange, range, &resultsLength);
 				if (resultsLength < 1) {
@@ -117,8 +118,14 @@ int main(int argc, char *argv[])
 					break;
 				}
 				else {
+					printf("\nCODE\tName\t\t\t\tLatitude\tLongitude\n");
 					for (i = 0; i < resultsLength; i++) {
-						printAirport(range[i]);
+						if (range[i].lat == temp1.lat) {
+							
+						}
+						else {
+							printAirport(range[i]);
+						}
 					}
 				}
                 break;
@@ -137,8 +144,7 @@ int main(int argc, char *argv[])
     This function prints the main menu.
     Returns: Nothing
 */
-void printMenu()
-{
+void printMenu() {
     printf("\n#########################################\n");
     printf("\tAirport Program Menu\n");
     printf("#########################################\n");
